@@ -1,0 +1,45 @@
+As a developer, I have to complete this project that I was asked to do by the client.
+I prefer centralized config file .env for every settings for this project so I can set everything later myself.
+First, I will deploy on testnet and later, when everything is ok, I will deploy on mainnet by simply change only one item NODE_ENV in .env file.
+Remember, I am just a developer. So I have to complete perfectly on testnet with my own developer wallet first, after then I have to deploy on mainnet by handling .env file.
+Here is project requirements. Remember this is the post of the client.
+
+<>
+Prpject Detail:
+
+I need a Solidity expert to develop a 1:1 USD-backed stablecoin with auditability via Chainlink. The project involves creating an upgradeable ERC-20 token (uups standard) with access control for 1-2 operators responsible for minting and burning tokens. Integration with Chainlink will be required for backing auditing, ensuring system transparency and reliability. The contract must emit clear events (TokensMinted/TokensBurned) to facilitate transaction traceability. The required stack includes Solidity ^0.8.0, Hardhat + OpenZeppelin, Chainlink Functions/Data Feeds, and Polygon PoS. Expected deliverables include: an upgradeable contract with AccessControl, deployment scripts for Hardhat, comprehensive testing to ensure contract robustness, detailed technical documentation, and support for Polygonscan verification.
+
+- create an upgradable ERC20 with UUPS and AccessControl.
+- define functions for one or two operators with mint and burn.
+- emit TokensMinted and TokensBurned events.
+- integrate Chainlink for proof-of-stake with Functions or Data Feeds.
+- provide Hardhat deployment scripts, unit and integration tests, documentation, and verification on Polygonscan.
+
+Critical points and solutions. Support via Chainlink. I can use Chainlink Functions to retrieve the custodian's proof of reserves and anchor it to the contract. I validate responses and defend against stale responses with nonce and timestamp verification. Secure governance. Multisig administration with UUPSUpgradeable. Only the administrator can upgrade. Operators with auditable MINTER_ROLE and BURNER_ROLE. Operation. Pausable to lock the system in case of failure. Minting limits and allowed address lists, if desired. Observability. Events and scripts for real-time monitoring.
+
+Here’s the information to complete this project.
+
+Collateral (Backing):
+The USD collateral is held by FT Asset Management. You can verify it through their API:
+https://my.ftassetmanagement.com/api/bcl.asp?KeyCodeGUID=f9132e91-d810-11ef-a3af-00155d010b18&AccountGUID=d2e45a89-7de0-11f0-8b61-00155d010b18&AccountNr=42528
+
+Polygonscan API key: SQFCTQ8UVHUN883CFCNVWZF8SF4QVVJSRY.
+
+Governance:
+Single address for governance (on Polygon, for ADMIN): 0x29F1bE1E72c031539bc22437aFde22fF765EE00e
+MINTER/BURNER wallet address: 0x308442BBd27CAF66c614471Fb1933f7dd447b5da.
+
+Token details:
+- Name: Vetra
+- Symbol: VTR
+
+decimals: 18
+flow: Amoy to Polygon mainnet
+reserve updates - every 5 min, TTL 15 min
+
+The address for the MINTER/BURNER will be the Polygon address I sent. How much do you need me to deposit in these wallets for testing and deployment?
+Amoy testnet (free faucets)
+* Amoy POL: 3 per address.
+* Test LINK: 2 per address.
+
+</>
