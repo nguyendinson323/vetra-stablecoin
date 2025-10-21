@@ -20,6 +20,8 @@ deployments/*.json
 *.swo
 *~
 .claude
+documents
+*.txt
 
 # OS
 .DS_Store

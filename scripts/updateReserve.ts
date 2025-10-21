@@ -70,37 +70,51 @@ const response = await Functions.makeHttpRequest({
 });
 
 if (response.error) {
-  throw new Error("API request failed");
+  throw new Error("API request failed: " + response.error);
 }
 
-// Parse response
-// Expected format: { balance: number } or similar
-// Adjust based on actual API response format
+// Parse FT Asset Management API response
+// Expected format: { "StatementSummary": { "TotalBalance": "100000000.00", ... } }
 const data = response.data;
 
-// Extract USD balance
-// This is an example - adjust based on actual API structure
-let usdBalance = 0;
+if (!data || typeof data !== 'object') {
+  throw new Error("Invalid API response: expected object");
+}
 
-if (typeof data === 'object' && data.balance !== undefined) {
-  usdBalance = parseFloat(data.balance);
-} else if (typeof data === 'number') {
-  usdBalance = data;
-} else {
-  throw new Error("Unexpected API response format");
+if (!data.StatementSummary || typeof data.StatementSummary !== 'object') {
+  throw new Error("Invalid API response: missing StatementSummary");
+}
+
+const totalBalance = data.StatementSummary.TotalBalance;
+
+if (!totalBalance || typeof totalBalance !== 'string') {
+  throw new Error("Invalid API response: missing or invalid TotalBalance");
+}
+
+// Parse balance string (e.g., "100000000.00") to float
+const usdBalance = parseFloat(totalBalance);
+
+if (isNaN(usdBalance) || usdBalance < 0) {
+  throw new Error("Invalid balance value: " + totalBalance);
 }
 
 // Convert to 8 decimals (contract expects USD with 8 decimals)
+// Example: $100,000,000.00 -> 10000000000000000 (10^16)
 const usdWith8Decimals = Math.floor(usdBalance * 100000000);
 
-// Generate nonce (timestamp)
+// Generate monotonic nonce (timestamp in milliseconds)
 const nonce = Date.now();
 
-// Encode response as (uint256, uint256)
-const encoded = Functions.encodeUint256(usdWith8Decimals) +
-                Functions.encodeUint256(nonce).slice(2); // Remove 0x from second encoding
+// ABI-encode response as (uint256, uint256) tuple
+// The contract uses abi.decode(response, (uint256, uint256))
+// So we must return properly ABI-encoded data
+const abiCoder = ethers.utils.defaultAbiCoder;
+const encoded = abiCoder.encode(
+  ['uint256', 'uint256'],
+  [usdWith8Decimals, nonce]
+);
 
-return ethers.utils.hexlify(encoded);
+return encoded;
   `.trim();
 
   console.log("Chainlink Functions Source Code:");
