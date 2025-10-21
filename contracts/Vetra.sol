@@ -55,7 +55,8 @@ contract Vetra is
     uint256 public constant TOKEN_DECIMALS = 1e18;
 
     /// @notice Conversion factor from reserve to token (10^10)
-    uint256 public constant RESERVE_TO_TOKEN_SCALE = TOKEN_DECIMALS / RESERVE_SCALE_FACTOR;
+    uint256 public constant RESERVE_TO_TOKEN_SCALE =
+        TOKEN_DECIMALS / RESERVE_SCALE_FACTOR;
 
     // =============================================================
     //                    CHAINLINK CONFIGURATION
@@ -127,7 +128,11 @@ contract Vetra is
     event MintLimitUpdated(uint256 oldLimit, uint256 newLimit);
     event AllowlistStatusUpdated(bool enabled);
     event AllowlistAddressUpdated(address indexed account, bool allowed);
-    event ChainlinkConfigUpdated(address router, bytes32 donId, uint64 subscriptionId);
+    event ChainlinkConfigUpdated(
+        address router,
+        bytes32 donId,
+        uint64 subscriptionId
+    );
 
     // =============================================================
     //                            ERRORS
@@ -227,11 +232,10 @@ contract Vetra is
      * @param to Recipient address
      * @param amount Amount to mint (18 decimals)
      */
-    function mint(address to, uint256 amount)
-        external
-        onlyRole(MINTER_ROLE)
-        whenNotPaused
-    {
+    function mint(
+        address to,
+        uint256 amount
+    ) external onlyRole(MINTER_ROLE) whenNotPaused {
         if (to == address(0)) revert InvalidAddress();
         if (amount == 0) revert InvalidAmount();
 
@@ -282,11 +286,10 @@ contract Vetra is
      * @param account Account to burn from
      * @param amount Amount to burn
      */
-    function burnFrom(address account, uint256 amount)
-        external
-        onlyRole(BURNER_ROLE)
-        whenNotPaused
-    {
+    function burnFrom(
+        address account,
+        uint256 amount
+    ) external onlyRole(BURNER_ROLE) whenNotPaused {
         if (account == address(0)) revert InvalidAddress();
         if (amount == 0) revert InvalidAmount();
 
@@ -329,7 +332,10 @@ contract Vetra is
      * @param args Arguments for the source code (if any)
      * @return requestId The Chainlink Functions request ID
      */
-    function requestReserveUpdate(string calldata _sourceCode, string[] calldata args)
+    function requestReserveUpdate(
+        string calldata _sourceCode,
+        string[] calldata args
+    )
         external
         payable
         onlyRole(DEFAULT_ADMIN_ROLE)
@@ -395,7 +401,10 @@ contract Vetra is
 
         // Decode response: (uint256 usdAmount, uint256 nonce)
         // Response should be ABI-encoded tuple
-        (uint256 usdAmount, uint256 nonce) = abi.decode(response, (uint256, uint256));
+        (uint256 usdAmount, uint256 nonce) = abi.decode(
+            response,
+            (uint256, uint256)
+        );
 
         // Enforce monotonic nonce
         if (nonce <= lastReserveNonce) {
@@ -418,10 +427,9 @@ contract Vetra is
      * @notice Updates the reserve TTL
      * @param _newTTL New TTL in seconds
      */
-    function setReserveTTL(uint256 _newTTL)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setReserveTTL(
+        uint256 _newTTL
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_newTTL == 0) revert InvalidConfiguration();
         uint256 oldTTL = reserveTTL;
         reserveTTL = _newTTL;
@@ -432,10 +440,9 @@ contract Vetra is
      * @notice Updates the per-transaction mint limit
      * @param _newLimit New limit (0 to disable)
      */
-    function setMintPerTxLimit(uint256 _newLimit)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setMintPerTxLimit(
+        uint256 _newLimit
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         uint256 oldLimit = mintPerTxLimit;
         mintPerTxLimit = _newLimit;
         emit MintLimitUpdated(oldLimit, _newLimit);
@@ -445,10 +452,9 @@ contract Vetra is
      * @notice Enables or disables the allowlist
      * @param _enabled Whether allowlist is enabled
      */
-    function setAllowlistEnabled(bool _enabled)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setAllowlistEnabled(
+        bool _enabled
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         allowlistEnabled = _enabled;
         emit AllowlistStatusUpdated(_enabled);
     }
@@ -458,10 +464,10 @@ contract Vetra is
      * @param account Address to update
      * @param allowed Whether address is allowed
      */
-    function setAllowlistAddress(address account, bool allowed)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setAllowlistAddress(
+        address account,
+        bool allowed
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (account == address(0)) revert InvalidAddress();
         allowlist[account] = allowed;
         emit AllowlistAddressUpdated(account, allowed);
@@ -557,9 +563,7 @@ contract Vetra is
      * @notice Authorizes upgrade to new implementation
      * @dev Only callable by admin
      */
-    function _authorizeUpgrade(address newImplementation)
-        internal
-        override
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {}
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 }
