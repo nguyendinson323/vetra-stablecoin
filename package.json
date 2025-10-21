@@ -16,6 +16,8 @@
     "update-reserve:polygon": "hardhat run scripts/updateReserve.ts --network polygon",
     "test-mint:amoy": "hardhat run scripts/testMint.ts --network amoy",
     "test-mint:polygon": "hardhat run scripts/testMint.ts --network polygon",
+    "mint-full:amoy": "hardhat run scripts/mintFull.ts --network amoy",
+    "mint-full:polygon": "hardhat run scripts/mintFull.ts --network polygon",
     "monitor:amoy": "hardhat run scripts/monitor.ts --network amoy",
     "monitor:polygon": "hardhat run scripts/monitor.ts --network polygon",
     "clean": "hardhat clean",
